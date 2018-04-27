@@ -1,19 +1,47 @@
 let inspectButton = document.getElementById('inspectRequest');
 let content = document.getElementById('space');
 
-inspectButton.onclick = function(element) {
-	console.log("clicked");
-};
+let url = "<all_urls>";
 
 let addKeyValue = function(key, value){
-	content.innerHTML += key+":\t\t"+value+"\n";	
+	content.innerHTML += '<p>'+key+":\t\t"+value+"\n</p>";	
 }
 
-chrome.webRequest.onBeforeRequest.addListener(
-  function(details){
+let callback = function(details){
 	  content.innerHTML = "";
-	  addKeyValue("RequestId", details['requestId']);
+	  for(key in details){
+		  if(key !=  'requestHeaders'){
+			addKeyValue(key, details[key]);
+		  }else{
+			  for(header_key in details[key]){
+			  addKeyValue(header_key, details[key][header_key]['name']+': '+details[key][header_key]['value']);
+			  }
+		  }
+	  }
+	  //addKeyValue("RequestId", details['requestId']);
+	  //addKeyValue("URL", details[)
 	  console.log(details);
-  },
-  {urls: ["<all_urls>"]},
-  ["requestBody"]);
+	};
+	
+let urls = {urls: [url]};
+let options = ["requestHeaders"];
+
+
+inspectButton.onclick = function(element) {
+
+	chrome.tabs.getSelected(null, function (tabs) {
+		console.log(tabs);
+		url = tabs['url']
+		urls = {urls: [url]};
+		
+		chrome.webRequest.onBeforeSendHeaders.removeListener(callback);
+		console.log(urls);
+		chrome.webRequest.onBeforeSendHeaders.addListener(callback, urls, options);
+	
+		chrome.tabs.reload();
+	});
+	
+	
+	
+	
+};
