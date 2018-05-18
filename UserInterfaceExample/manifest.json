@@ -1,0 +1,32 @@
+{
+	"name": "User Interface Example",
+	"version": "1.0",
+	"description": "Playing around with the user interface possibilities",
+	"permissions": ["activeTab", "declarativeContent", "storage", "contextMenus"],
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"browser_action": {
+		"default_popup": "popup.html"
+	},
+	"commands": {
+		"New Tab":{
+			"suggested_key": {
+			 "default": "Ctrl+Shift+5"
+			},
+			"description": "Create a new Tab",
+			"global": true
+		},
+        "_execute_browser_action": {
+            "suggested_key": {
+              "windows": "Ctrl+X",
+              "mac": "Command+X",
+              "chromeos": "Ctrl+X",
+              "linux": "Ctrl+X"
+            }
+        }
+	},
+	"omnibox": { "keyword": "omnibox"},
+	"manifest_version": 2
+}
